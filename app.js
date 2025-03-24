@@ -5,6 +5,10 @@ const app = express();
 const port = 3000;
 //soap request for smartschool api
 //checken of het al van ons is.
+
+//werkt
+
+
 const soapSmsEndpoint = 'https://snh.smartschool.be/Webservices/V3';
 const soapSmsPayload = `
 <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:web="https://snh.smartschool.be/Webservices/V3">
@@ -33,13 +37,25 @@ app.get('/', async (req, res) => {
   const baseUrl = "https://informatonline-sync.azurewebsites.net";
   const username = "034447"; // or "034454"
   const password = "IOLSpes2024!";
+  const tokenEndpoint = `${baseUrl}/api/token`;
   const reservationsEndpoint = `${baseUrl}/reservations`;
 
   try {
-    const response = await axios.get(reservationsEndpoint, {
+    // Obtain a token
+    const tokenResponse = await axios.post(tokenEndpoint, null, {
       auth: {
         username: username,
-        password: password
+        password: password,
+        grant_type: 'password'
+      }
+    });
+
+    const token = tokenResponse.data.token;
+
+    // Use the token to fetch reservations
+    const response = await axios.get(reservationsEndpoint, {
+      headers: {
+        Authorization: `Bearer ${token}`
       }
     });
 
