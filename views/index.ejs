@@ -6,7 +6,7 @@
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 	<meta name="description" content="SNH Refter">
-	<meta name="author" content="SNH">
+	<meta name="author"="SNH">
 	<meta name="keywords" content="refter, snh, mijnsnh">
 
 	<link rel="preconnect" href="https://fonts.gstatic.com">
@@ -43,6 +43,76 @@
 		.btn-orange:hover {
 		  background-color: darkorange;
 		  border-color: darkorange;
+		  
+		}
+		.modern-button {
+			background: rgba(255, 255, 255, 0.5);
+			backdrop-filter: blur(5px);
+			border: 1px solid rgba(255, 255, 255, 0.3);
+			color: white;
+			transition: background 0.3s, border 0.3s;
+		}
+
+		.modern-button:hover {
+			background: rgba(255, 255, 255, 0.7);
+			border: 1px solid rgba(255, 255, 255, 0.5);
+			}
+		.clear-button {
+			background: #007bff; /* Bootstrap primary color */
+			border: 1px solid #007bff;
+			color: white;
+			transition: background 0.3s, border 0.3s;
+		}
+
+		.clear-button:hover {
+			background: #0056b3; /* Darker shade of Bootstrap primary color */
+			border: 1px solid #0056b3;
+			}
+		.btn-soup-red {
+			background-color: #ff6347; /* Tomato red */
+			border-color: #ff6347;
+			color: white;
+		}
+		.btn-soup-red:hover {
+			background-color: #e5533d; /* Darker tomato red */
+			border-color: #e5533d;
+		}
+		.btn-donut-pink {
+			background-color: #ff69b4; /* Hot pink */
+			border-color: #ff69b4;
+			color: white;
+			position: relative;
+		}
+		.btn-donut-pink::before {
+			content: '';
+			position: absolute;
+			top: 50%;
+			left: 50%;
+			width: 100%;
+			height: 100%;
+			background: radial-gradient(circle, white 1px, transparent 1px);
+			background-size: 10px 10px;
+			transform: translate(-50%, -50%);
+			opacity: 0.5;
+		}
+		.btn-donut-pink:hover {
+			background-color: #ff1493; /* Deeper pink */
+			border-color: #ff1493;
+			}
+		.btn-dessert {
+			background-color: #ff69b4; /* Hot pink */
+			border-color: #ff69b4;
+			color: white;
+			position: relative;
+		}
+		.btn-dessert img {
+			width: 30px;
+			height: 30px;
+			margin-right: 10px;
+		}
+		.btn-dessert:hover {
+			background-color: #ff1493; /* Deeper pink */
+			border-color: #ff1493;
 		}
 	  </style>
 </head>
@@ -346,19 +416,27 @@
 			
 			<main class="content">
 				<div class="container-fluid p-0">
-
-					<h1 class="h3 mb-3"><strong>Extra</strong> maaltijdopties </h1>
-					
+					<div class="flex flex-col items-center p-6 bg-gray-100 min-h-screen">
+						<!-- Gebruikersinformatie -->
+						<div class="w-full max-w-lg p-4 mb-6 bg-white shadow-md rounded-xl text-center">
+							<div class="w-24 h-24 bg-gray-300 rounded-full mx-auto mb-2"></div>
+							<h2 class="text-xl font-semibold">Gebruikersinformatie</h2>
+							<p class="text-gray-600">Naam: [Naam]</p>
+							<p class="text-gray-600">E-mail: [E-mail]</p>
+						</div>
+						<!-- ...existing code... -->
 						<div class="container-fluid p-0">
 						  <div class="row">
 							<div class="col-12 col-md-4 mb-3">
-							  <button class="btn btn-primary btn-block big-button">Soep</button>
+							  <button id="soep" class="btn btn-soup-red btn-block big-button">Soep</button>
 							</div>
 							<div class="col-12 col-md-4 mb-3">
-							  <button class="btn btn-secondary btn-block big-button">Dessert</button>
+							  <button id="dessert" class="btn btn-dessert btn-block big-button">
+								<img src="img/cupcake.png" alt="Cupcake"> Dessert
+							  </button>
 							</div>
 							<div class="col-12 col-md-4 mb-3">
-							  <button class="btn btn-success btn-block big-button">Rauwkost</button>
+							  <button id="rauw" class="btn btn-success btn-block big-button">Rauwkost</button>
 							</div>
 						  </div>
 						</div>
@@ -370,6 +448,7 @@
 							  <p>geen reservaties gevonden.</p>
 							<% } %>
 						  </div>
+						  <button id="aanpassen" class="btn btn-primary btn-lg mt-3 clear-button" style=" width: 100%;">Aanpassen</button>
 
 					  </main>
 <!--
@@ -902,6 +981,85 @@
 		});
 	</script>
 	-->
+	<script>
+	document.addEventListener("DOMContentLoaded", function() {
+		const buttons = document.querySelectorAll('.big-button');
+		const reservationsDiv = document.getElementById('reservations');
+		const buttonPressCounts = {};
+		const aanpassenButton = document.getElementById('aanpassen');
+
+		buttons.forEach(button => {
+			buttonPressCounts[button.id] = 0;
+
+			button.addEventListener('click', function() {
+				const id = this.id;
+				buttonPressCounts[id]++;
+
+				if (id === 'soep' && buttonPressCounts[id] > 1) {
+					alert('Soep kan maar één keer worden toegevoegd.');
+					return;
+				}
+
+				if ((id === 'dessert' || id === 'rauw') && buttonPressCounts[id] === 2) {
+					const confirmation = confirm('2de maal! Verdergaan?');
+					if (!confirmation) {
+						buttonPressCounts[id]--;
+						return;
+					}
+				}
+				if ((id === 'dessert' || id === 'rauw') && buttonPressCounts[id] === 3) {
+					const confirmation = confirm('3de maal! Verdergaan?');
+					if (!confirmation) {
+						buttonPressCounts[id]--;
+						return;
+					}
+				}
+
+				let counterElement = document.getElementById(id + '-counter');
+
+				if (!counterElement) {
+					counterElement = document.createElement('div');
+					counterElement.id = id + '-counter';
+					counterElement.innerHTML = `${id}: <span class="counter-value">1</span>`;
+					reservationsDiv.appendChild(counterElement);
+					aanpassenButton.style.display = 'block';
+				} else {
+					const currentCount = parseInt(counterElement.querySelector('.counter-value').textContent);
+					counterElement.querySelector('.counter-value').textContent = currentCount + 1;
+				}
+			});
+		});
+
+		let isEditing = false;
+
+		aanpassenButton.addEventListener('click', function() {
+			if (isEditing) {
+				const inputs = reservationsDiv.querySelectorAll('.counter-input');
+				inputs.forEach(input => {
+					const newValue = input.value;
+					const span = document.createElement('span');
+					span.classList.add('counter-value');
+					span.textContent = newValue;
+					input.replaceWith(span);
+				});
+				aanpassenButton.textContent = 'Aanpassen';
+			} else {
+				const counters = reservationsDiv.querySelectorAll('.counter-value');
+				counters.forEach(counter => {
+					const currentValue = counter.textContent;
+					const input = document.createElement('input');
+					input.type = 'number';
+					input.value = currentValue;
+					input.classList.add('counter-input');
+					input.style.width = '50px';
+					counter.replaceWith(input);
+				});
+				aanpassenButton.textContent = 'Opslaan';
+			}
+			isEditing = !isEditing;
+		});
+	});
+</script>
 
 </body>
 
